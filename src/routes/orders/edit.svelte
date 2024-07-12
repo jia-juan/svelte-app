@@ -1,21 +1,10 @@
-// src/routes/orders/edit.svelte
 <script>
     import { onMount } from 'svelte';
     import { push } from 'svelte-spa-router';
-    import { getAuthHeaders, isAuthenticated, logout } from "../../utils/auth.js";
-    import { getContext } from 'svelte';
+    import { isAuthenticated, logout, getAuthHeaders } from "../../utils/auth.js";
 
-    let orderId;
-    let orderData = {
-        customer: '',
-        // products: [],
-        order_date: '',
-        total_amount: 0,
-        status: '',
-    };
-
-    const { params } = getContext('routified');
-    orderId = params.id;
+    export let params; // 接受路由参数
+    let order = {};
 
     onMount(async () => {
         if (!isAuthenticated()) {
@@ -23,28 +12,33 @@
             return;
         }
 
-        const res = await fetch(`http://localhost:8000/api/orders/${orderId}/`, {
+        const response = await fetch(`http://localhost:8000/api/orders/${params.id}/`, {
             headers: getAuthHeaders(),
         });
-        if (res.ok) {
-            orderData = await res.json();
+
+        if (response.ok) {
+            order = await response.json();
         } else {
             logout();
         }
     });
 
     const updateOrder = async () => {
-        const res = await fetch(`http://localhost:8000/api/orders/${orderId}/`, {
+        const response = await fetch(`http://localhost:8000/api/orders/${params.id}/`, {
             method: 'PUT',
             headers: {
                 ...getAuthHeaders(),
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify(orderData),
+            body: JSON.stringify(order)
         });
-        if (res.ok) {
+
+        if (response.ok) {
             push('/orders');
         } else {
-            logout();
+            const errorData = await response.json();
+            console.error('Failed to update order:', errorData);
+            // 处理更新失败的逻辑
         }
     };
 </script>
@@ -52,26 +46,15 @@
 <main>
     <h1>Edit Order</h1>
     <form on:submit|preventDefault={updateOrder}>
-        <div>
-            <label for="customer">Customer:</label>
-            <input type="text" id="customer" bind:value={orderData.customer} />
-        </div>
-<!--        <div>-->
-<!--            <label for="products">Products:</label>-->
-<!--            <input type="text" id="products" bind:value={orderData.products} />-->
-<!--        </div>-->
-        <div>
-            <label for="order_date">Order Date:</label>
-            <input type="text" id="order_date" bind:value={orderData.order_date} />
-        </div>
-        <div>
-            <label for="total_amount">Total Amount:</label>
-            <input type="number" id="total_amount" bind:value={orderData.total_amount} />
-        </div>
-        <div>
-            <label for="status">Status:</label>
-            <input type="text" id="status" bind:value={orderData.status} />
-        </div>
-        <button type="submit">Update Order</button>
+        <label for="customer">Customer</label>
+        <input id="customer" type="text" bind:value={order.customer_username} />
+
+        <label for="total_amount">Total Amount</label>
+        <input id="total_amount" type="number" bind:value={order.total_amount} />
+
+        <label for="status">Status</label>
+        <input id="status" type="text" bind:value={order.status} />
+
+        <button type="submit">Save</button>
     </form>
 </main>

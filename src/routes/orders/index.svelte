@@ -9,6 +9,10 @@
         push('/orders/add');
     };
 
+    const goToEditOrder = (id) => {
+        push(`/orders/edit/${id}`);
+    };
+
     onMount(async () => {
         if (!isAuthenticated()) {
             push('/login');
@@ -60,10 +64,7 @@
                 <td>{order.total_amount}</td>
                 <td>{order.status}</td>
                 <td>
-                    <!-- todo orders/edit/<id> 沒有正常跳轉 -->
-                    <a href={`/orders/edit/${order.id}`}>
-                        <button>Edit</button>
-                    </a>
+                    <button on:click={() => goToEditOrder(order.id)}>Edit</button>
                     <button on:click={() => deleteOrder(order.id)}>Delete</button>
                 </td>
             </tr>
