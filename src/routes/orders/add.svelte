@@ -6,14 +6,12 @@
 
     let orderData = {
         customer: '',
-        // products: [],
         order_date: '',
         total_amount: 0,
         status: '',
     };
 
     let customers = [];
-    let products = [];
     let statusOptions = [];
 
     const fetchCustomers = async () => {
@@ -26,17 +24,6 @@
             logout();
         }
     };
-
-    // const fetchProducts = async () => {
-    //     const response = await fetch('http://localhost:8000/api/product/', {
-    //         headers: getAuthHeaders(),
-    //     });
-    //     if (response.ok) {
-    //         products = await response.json();
-    //     } else {
-    //         logout();
-    //     }
-    // };
 
     const fetchStatusOptions = async () => {
         const response = await fetch('http://localhost:8000/api/order-status/', {
@@ -62,11 +49,6 @@
     const selectCustomer = (customerId) => {
         orderData.customer = customerId;
     };
-
-    // const selectProducts = (event) => {
-    //     const selectedProducts = Array.from(event.target.selectedOptions, option => option.value);
-    //     orderData.products = selectedProducts;
-    // };
 
     const setTodayDate = () => {
         const today = new Date().toISOString().split('T')[0];
@@ -102,16 +84,6 @@
                 {/each}
             </select>
         </div>
-<!--        <div>-->
-<!--            <label for="products">Products:</label>-->
-<!--            <select id="products" multiple bind:value={orderData.products} on:change={selectProducts}>-->
-<!--                {#each products as product}-->
-<!--                    <option value={product.id}>-->
-<!--                        {product.name}-->
-<!--                    </option>-->
-<!--                {/each}-->
-<!--            </select>-->
-<!--        </div>-->
         <div>
             <label for="order_date">Order Date:</label>
             <input type="date" id="order_date" bind:value={orderData.order_date} />
