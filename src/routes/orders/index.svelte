@@ -2,6 +2,7 @@
     import { onMount } from 'svelte';
     import { push } from 'svelte-spa-router';
     import { isAuthenticated, logout, getAuthHeaders } from "../../utils/auth.js";
+    import NavBar from '../../components/NavBar.svelte';
 
     let orders = [];
 
@@ -42,6 +43,8 @@
         }
     };
 </script>
+
+<NavBar />
 
 <main>
     <h1>Orders</h1>
